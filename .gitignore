@@ -1,5 +1,10 @@
-
+out/
+hello.zip
+hello/
+.lift/
 .idea/
+*.iml
+*.xml
 # Compiled class file
 *.class
 
