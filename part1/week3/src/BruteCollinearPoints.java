@@ -23,10 +23,13 @@ public class BruteCollinearPoints {
         for (int index1 = 0; index1 < size - 3; index1++) {
             for (int index2 = index1 + 1; index2 < size - 2; index2++) {
                 double slope12 = points[index1].slopeTo(points[index2]);
+
                 for (int index3 = index2 + 1; index3 < size - 1; index3++) {
                     double slope13 = points[index1].slopeTo(points[index3]);
+
                     for (int index4 = index3 + 1; index4 < size; index4++) {
                         double slope14 = points[index1].slopeTo(points[index4]);
+
                         if ((slope12 == slope13) && (slope12 == slope14)) {
                             segments.add(new LineSegment(points[index1], points[index4]));
                             number_of_segments++;
