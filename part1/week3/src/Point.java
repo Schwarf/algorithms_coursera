@@ -2,8 +2,6 @@ import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.Comparator;
 
-import static java.lang.Math.abs;
-
 public class Point implements Comparable<Point> {
 
     private final int x;     // x-coordinate of this point
@@ -55,13 +53,13 @@ public class Point implements Comparable<Point> {
         double denominator = this.x - that.x;
         double numerator = this.y - that.y;
         double epsilon = 0.0;
-        if ((abs(denominator) == epsilon) && (abs(numerator) == epsilon)) {
+        if (denominator == epsilon && numerator == epsilon) {
             return Double.NEGATIVE_INFINITY;
         }
-        if ((abs(numerator) == epsilon)) {
+        if (numerator == epsilon) {
             return 0.0;
         }
-        if ((abs(denominator) == epsilon)) {
+        if (denominator == epsilon) {
             return Double.POSITIVE_INFINITY;
         }
 
@@ -116,9 +114,9 @@ public class Point implements Comparable<Point> {
         }
 
         public int compare(Point a, Point b) {
-            double slope_a = slopeTo(a);
-            double slope_b = slopeTo(b);
-            return Double.compare(slope_a, slope_b);
+            double slopeA = slopeTo(a);
+            double slopeB = slopeTo(b);
+            return Double.compare(slopeA, slopeB);
         }
     }
 

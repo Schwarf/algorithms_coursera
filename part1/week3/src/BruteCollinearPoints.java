@@ -2,16 +2,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BruteCollinearPoints {
-    private int number_of_segments = 0;
-    private LineSegment[] line_segments;
+    private int numberOfSegments = 0;
+    private LineSegment[] lineSegments;
 
     public BruteCollinearPoints(Point[] points) { // finds all line segments containing 4 points
 
         if (points == null)
             throw new IllegalArgumentException("Points is null");
-        if (check_for_null(points))
+        if (checkForNull(points))
             throw new IllegalArgumentException("Point in Points is null");
-        if (check_for_duplicate_points(points))
+        if (checkForDuplicatePoints(points))
             throw new IllegalArgumentException("Points contains duplicates");
         get_line_segments(points);
     }
@@ -32,18 +32,18 @@ public class BruteCollinearPoints {
 
                         if ((slope12 == slope13) && (slope12 == slope14)) {
                             segments.add(new LineSegment(points[index1], points[index4]));
-                            number_of_segments++;
+                            numberOfSegments++;
                         }
 
                     }
                 }
             }
         }
-        line_segments = new LineSegment[segments.size()];
+        lineSegments = new LineSegment[segments.size()];
 
     }
 
-    private boolean check_for_null(Point[] points) {
+    private boolean checkForNull(Point[] points) {
         for (Point point : points) {
             if (point == null)
                 return true;
@@ -51,7 +51,7 @@ public class BruteCollinearPoints {
         return false;
     }
 
-    private boolean check_for_duplicate_points(Point[] points) {
+    private boolean checkForDuplicatePoints(Point[] points) {
         for (int i = 0; i < points.length; i++) {
             for (int j = i + 1; j < points.length - 1; j++) {
                 if (points[i].compareTo(points[j]) == 0)
@@ -62,11 +62,11 @@ public class BruteCollinearPoints {
     }
 
     public int numberOfSegments() {
-        return number_of_segments;
+        return numberOfSegments;
     }
 
     public LineSegment[] segments() {
-        return line_segments;
+        return lineSegments.clone();
     }
 
 }

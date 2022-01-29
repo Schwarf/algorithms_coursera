@@ -1,61 +1,102 @@
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 public class FastCollinearPoints {
-    private int number_of_segments = 0;
-    private LineSegment[] line_segments;
+    private LineSegment[] lineSegments;
+
 
     public FastCollinearPoints(Point[] points) {
+        if (points == null)
+            throw new IllegalArgumentException("Points is null");
+        if (checkForNull(points))
+            throw new IllegalArgumentException("Point in Points is null");
+        if (checkForDuplicatePoints(points))
+            throw new IllegalArgumentException("Points contains duplicates");
+        Point[] sortedPoints = points.clone();
+        Arrays.sort(sortedPoints);
+        final int numberOfPoints = sortedPoints.length;
+        final List<LineSegment> lineSegmentList = new LinkedList<>();
+        for (Point referencePoint : sortedPoints) {
+            Arrays.sort(points, referencePoint.slopeOrder());
+            int index2 = 1;
+            while (index2 < numberOfPoints) {
+                LinkedList<Point> candidates = new LinkedList<>();
+                final double slopeReference = referencePoint.slopeTo(points[index2]);
+                do {
+                    candidates.add(points[index2++]);
+                } while (index2 < numberOfPoints && referencePoint.slopeTo(points[index2]) == slopeReference);
 
-    }
+                if (candidates.size() > 2 && referencePoint.compareTo(candidates.peek()) < 0) {
+                    Point maximum = candidates.removeLast();
+                    lineSegmentList.add(new LineSegment(referencePoint, maximum));
 
-    private void sort_(Point[] points) {
-
-        int end = points.length - 1;
-        for (int reference_index = 0; reference_index < points.length - 3; reference_index++) {
-            int start = reference_index + 1;
-            quicksort_(points, start, end, reference_index);
-            if ()
-        }
-    }
-
-    private void quicksort_(Point[] points, int start, int end, int reference_index) {
-        if (end <= start)
-            return;
-        int index = partition_(points, start, end, reference_index);
-        quicksort_(points, start, index, reference_index);
-        quicksort_(points, index + 1, end, reference_index);
-    }
-
-    private int partition_(Point[] points, int start, int end, int reference_index) {
-        int index1 = start;
-        int index2 = end;
-        while (true) {
-            while (points[reference_index].slopeTo(points[++index1]) < points[reference_index].slopeTo(points[start])) {
-                if (index1 == end)
-                    break;
+                }
             }
-            while (points[reference_index].slopeTo(points[start]) < points[reference_index].slopeTo(points[index2--])) {
-                if (index2 == start)
-                    break;
-            }
-            if (index1 >= index2)
-                break;
 
-            swap(points, index1, index2);
         }
-        swap(points, start, index2);
-        return index2;
+        lineSegments = lineSegmentList.toArray(new LineSegment[0]);
     }
 
-    private void swap(Point[] points, int index1, int index2) {
-        Point help = points[index1];
-        points[index1] = points[index2];
-        points[index2] = help;
+    private boolean checkForNull(Point[] points) {
+        for (Point point : points) {
+            if (point == null)
+                return true;
+        }
+        return false;
     }
+
+    private boolean checkForDuplicatePoints(Point[] points) {
+        for (int i = 0; i < points.length; i++) {
+            for (int j = i + 1; j < points.length - 1; j++) {
+                if (points[i].compareTo(points[j]) == 0)
+                    return true;
+            }
+        }
+        return false;
+    }
+
 
     public int numberOfSegments() {
-        return number_of_segments;
+        return lineSegments.length;
     }
 
     public LineSegment[] segments() {
-        return line_segments;
+        return lineSegments.clone();
+    }
+
+    public static void main(String[] args) {
+
+        // read the n points from a file
+        In in = new In(args[0]);
+        int n = in.readInt();
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            points[i] = new Point(x, y);
+        }
+
+        // draw the points
+        StdDraw.enableDoubleBuffering();
+        StdDraw.setXscale(0, 32768);
+        StdDraw.setYscale(0, 32768);
+        for (Point p : points) {
+            p.draw();
+        }
+        StdDraw.show();
+
+        // print and draw the line segments
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+            segment.draw();
+        }
+        StdDraw.show();
+
     }
 }
